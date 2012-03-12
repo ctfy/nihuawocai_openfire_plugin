@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin>
+    <class>org.jivesoftware.openfire.plugin.DrawServicePlugin</class>
+    <name>Draw Service</name>
+    <description>draw service</description>
+    <author>wlk</author>
+    <version>0.0.3</version>
+    <date>03/12/2012</date>
+    <minServerVersion>3.5.1</minServerVersion>
+</plugin>
