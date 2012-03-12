@@ -29,8 +29,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jivesoftware.openfire.XMPPServer;
+import org.jivesoftware.admin.AuthCheckFilter;
 import org.jivesoftware.openfire.plugin.DrawServicePlugin;
+import org.jivesoftware.openfire.plugin.openid.OpenIDMananger;
 
 /**
  * Servlet that addition/deletion/modification of the users info in the system.
@@ -51,18 +52,24 @@ public class DrawServiceServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 		super.init(servletConfig);
-		plugin = (DrawServicePlugin) XMPPServer.getInstance().getPluginManager().getPlugin("userservice");
+//		plugin = (DrawServicePlugin) XMPPServer.getInstance().getPluginManager().getPlugin("userservice");
 
+		AuthCheckFilter.addExclude("drawService/drawService");
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-
+			String type = request.getParameter("type");
+			String token_key = request.getParameter("token_key");
+			String token_secret = request.getParameter("token_secret");
+			
+			String openid = OpenIDMananger.getOpenID(OpenIDMananger.TYPE_QQ, token_key, token_secret);
+			
+			replyMessage(openid, response, response.getWriter());
 		} catch (Exception e) {
-			throw new IOException();
+			replyError(e.getMessage(), response, response.getWriter());
 		}
-		replyMessage("hello world", response, response.getWriter());
 	}
 
 	private void replyMessage(String message, HttpServletResponse response, PrintWriter out) {
@@ -85,5 +92,6 @@ public class DrawServiceServlet extends HttpServlet {
 	@Override
 	public void destroy() {
 		super.destroy();
+		AuthCheckFilter.removeExclude("drawService/drawService");
 	}
 }
